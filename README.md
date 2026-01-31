@@ -1,7 +1,7 @@
 中文文档: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README_zh_CN.md
 Deutsch: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README_de_DE.md
 
-# siyuan-zk-queryview
+# siyuan-zk-templater
 
 *siyuan-zk-project aims to deliver a minimal set of Zettelkasten features to SiYuan*
 
