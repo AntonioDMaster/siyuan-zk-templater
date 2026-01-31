@@ -1,5 +1,9 @@
-中文文档: https://github.com/hogmoff/siyuan-plugin-templater/blob/main/README_zh_CN.md
-Deutsch: https://github.com/hogmoff/siyuan-plugin-templater/blob/main/README_de_DE.md
+中文文档: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README_zh_CN.md
+Deutsch: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README_de_DE.md
+
+# siyuan-zk-queryview
+
+*siyuan-zk-project aims to deliver a minimal set of Zettelkasten features to SiYuan*
 
 # Templater for SiYuan
 
@@ -20,8 +24,8 @@ Rule-based templating for new documents. Match the target path (and notebook) wi
 Install from the SiYuan Marketplace, or clone and build:
 
 ```bash
-git clone https://github.com/hogmoff/siyuan-plugin-templater.git
-cd siyuan-plugin-templater
+git clone https://github.com/AntonioDMaster/siyuan-zk-templater.git
+cd siyuan-zk-templater
 npm install
 npm run build
 ```

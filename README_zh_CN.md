@@ -1,5 +1,5 @@
-英文文档: https://github.com/hogmoff/siyuan-plugin-templater/blob/main/README.md
-德文文档: https://github.com/hogmoff/siyuan-plugin-templater/blob/main/README_de_DE.md
+英文文档: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README.md
+德文文档: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README_de_DE.md
 
 # 思源 Templater 插件
 
@@ -20,8 +20,8 @@
 从思源插件市场安装，或克隆仓库自行构建：
 
 ```bash
-git clone https://github.com/hogmoff/siyuan-plugin-templater.git
-cd siyuan-plugin-templater
+git clone https://github.com/AntonioDMaster/siyuan-zk-templater.git
+cd siyuan-zk-templater
 npm install
 npm run build
 ```

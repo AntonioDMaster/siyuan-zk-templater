@@ -1,7 +1,7 @@
 {
-  "name": "siyuan-plugin-templater",
-  "author": "hogmoff",
-  "url": "https://github.com/hogmoff/siyuan-plugin-templater",
+  "name": "siyuan-zk-templater",
+  "author": "AntonioDMaster",
+  "url": "https://github.com/AntonioDMaster/siyuan-zk-templater",
   "version": "0.7.3",
   "minAppVersion": "3.2.1",
   "backends": [
@@ -27,12 +27,10 @@
   },
   "description": {
     "default": "Automatically inserts templates when creating new documents based on their path",
-    "zh_CN": "根据新文档的路径，自动插入特定的模板。",
-    "de_DE": "Definierte Vorlagen bei neuen Dokumenten in Abhängigkeit vom Pfad einfügen"
+    "zh_CN": "根据新文档的路径，自动插入特定的模板。"
   },
   "readme": {
     "default": "README.md",
-    "de_DE": "README_de_DE.md",
     "zh_CN": "README_zh_CN.md"
   },
   "funding": {

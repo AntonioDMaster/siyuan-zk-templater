@@ -45,7 +45,7 @@ module.exports = (env, argv) => {
     const outputDir = path.resolve(__dirname, "dist");
     const plugins = [
         new MiniCssExtractPlugin({
-            filename: isPro ? "siyuan-plugin-templater/index.css" : "index.css",
+            filename: isPro ? "siyuan-zk-templater/index.css" : "index.css",
         })
     ];
     let entry = {
@@ -53,7 +53,7 @@ module.exports = (env, argv) => {
     };
     if (isPro) {
         entry = {
-            "./siyuan-plugin-templater/index": "./src/index.ts",
+            "./siyuan-zk-templater/index": "./src/index.ts",
         };
         plugins.push(new webpack.BannerPlugin({
             banner: () => {
@@ -63,19 +63,19 @@ module.exports = (env, argv) => {
 
         plugins.push(new CopyPlugin({
             patterns: [
-            {from: "preview.png", to: "./siyuan-plugin-templater/"},
-            {from: "icon.png", to: "./siyuan-plugin-templater/"},
-            {from: "README*.md", to: "./siyuan-plugin-templater/"},
-            {from: "plugin.json", to: "./siyuan-plugin-templater/"},
-            {from: "src/i18n/", to: "./siyuan-plugin-templater/i18n/"},
+            {from: "preview.png", to: "./siyuan-zk-templater/"},
+            {from: "icon.png", to: "./siyuan-zk-templater/"},
+            {from: "README*.md", to: "./siyuan-zk-templater/"},
+            {from: "plugin.json", to: "./siyuan-zk-templater/"},
+            {from: "src/i18n/", to: "./siyuan-zk-templater/i18n/"},
             ],
         }));        
         plugins.push(new ZipPlugin({
             filename: "package.zip",
             algorithm: "gzip",
-            include: [/siyuan-plugin-templater/],
+            include: [/siyuan-zk-templater/],
             pathMapper: (assetPath) => {
-                return assetPath.replace(/dist\/|siyuan-plugin-templater\//g, "");
+                return assetPath.replace(/dist\/|siyuan-zk-templater\//g, "");
             },
             path: path.resolve(__dirname)
         }));

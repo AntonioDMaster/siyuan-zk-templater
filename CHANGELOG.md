@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.7.3 2026-01-31
+- repository (https://github.com/hogmoff/siyuan-plugin-templater) fork initialized
+- new document recognition fixed when handling event (prevents overwriting existing documents)
+- added functionality to predefine attributes of documents created
+
 ## v0.7.3 2025-12-16
 - improved documentation
 

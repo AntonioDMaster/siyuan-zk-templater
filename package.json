@@ -1,5 +1,5 @@
 {
-  "name": "siyuan-plugin-templater",
+  "name": "siyuan-zk-templater",
   "version": "0.7.3",
   "description": "This is a templater plugin for Siyuan (https://b3log.org/siyuan)",
   "main": ".src/index.js",
@@ -11,7 +11,7 @@
     "release": "webpack --mode production && git tag v$(node -p \"require('./package.json').version\")"
   },
   "keywords": [],
-  "author": "hogmoff",
+  "author": "AntonioDMaster",
   "license": "MIT",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.29.0",

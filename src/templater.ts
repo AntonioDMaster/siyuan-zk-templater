@@ -14,7 +14,8 @@ import {
     insertBlock,
     deleteBlock,
     renderSprig,
-    getNotebookIdByName
+    getNotebookIdByName,
+    setCustomAttr
 } from "./api";
 import { applyTemplaterFunctions } from "./extendedFunctions";
 
@@ -26,6 +27,7 @@ export interface TemplateRule {
     icon?: string; // Optional emoji icon for the document
     iconUrl?: string; // Optional URL for the icon
     hotkey?: string; // Optional hotkey to trigger template copy
+    attributes?: Record<string, string>; // Optional attributes to set on the document
 }
 
 // Standardvalue for icon
@@ -329,7 +331,7 @@ export class Templater {
             }
 
             // Render the template
-            const absPath = (await getWorkspaceDir()) + "/" + rule.templateId;
+            const absPath = (await getWorkspaceDir()) + "/templates/" + rule.templateId;
             const renderResponse = await renderTemplate(newDocId, absPath);
             if (!renderResponse || !renderResponse.content) {
                 console.error("Failed to render template for hotkey rule:", renderResponse);
@@ -354,6 +356,14 @@ export class Templater {
                 const iconResponse = await setIcon(newDocId, rule.icon, rule.iconUrl || "");
                 if (!iconResponse || iconResponse.code !== 0) {
                     console.error("Failed to set icon on new doc:", iconResponse);
+                }
+            }
+
+            // Set document attributes if provided
+            if (newDocId && rule.attributes && Object.keys(rule.attributes).length > 0) {
+                const attrResponse = await setCustomAttr(newDocId, rule.attributes);
+                if (!attrResponse || attrResponse.code !== 0) {
+                    console.error("Failed to set attributes on new doc:", attrResponse);
                 }
             }
 

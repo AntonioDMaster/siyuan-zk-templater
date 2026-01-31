@@ -1,5 +1,5 @@
-Englische Doku: https://github.com/hogmoff/siyuan-plugin-templater/blob/main/README.md
-Chinesische Doku: https://github.com/hogmoff/siyuan-plugin-templater/blob/main/README_zh_CN.md
+Englische Doku: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README.md
+Chinesische Doku: https://github.com/AntonioDMaster/siyuan-zk-templater/blob/main/README_zh_CN.md
 
 # Templater für SiYuan
 
@@ -20,8 +20,8 @@ Regelbasierte Vorlagen für neue Dokumente. Passe anhand von Notebook + Pfad (Re
 Über den SiYuan‑Marktplatz installieren oder selbst bauen:
 
 ```bash
-git clone https://github.com/hogmoff/siyuan-plugin-templater.git
-cd siyuan-plugin-templater
+git clone https://github.com/AntonioDMaster/siyuan-zk-templater.git
+cd siyuan-zk-templater
 npm install
 npm run build
 ```

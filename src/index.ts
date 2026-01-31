@@ -3,6 +3,7 @@ import {
     showMessage,
     Dialog,
     Setting,
+    getAllEditor,
 } from "siyuan";
 import "./index.scss";
 import { Templater, TemplateRule, getDocumentPathById, DEFAULT_ICON } from "./templater";
@@ -85,21 +86,22 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
     }
 
     private async handleDocumentLoaded(event: any) {
-        // Check if this is a new document
-        const detail = event.detail;
-        if (!detail || !detail.protyle || !detail.protyle.path) {
+        // console.debug("Templater: switch-protyle received", event?.detail);
+        const detail = event?.detail;
+        if (!detail || !detail.protyle) {
+            // console.debug("Templater: switch-protyle ignored (missing protyle)");
             return;
         }
 
-        // Get Document ID
         const docId = detail.protyle.block?.rootID;
         if (!docId) {
+            // console.debug("Templater: switch-protyle ignored (missing docId)", detail);
             return;
         }
 
-        // Get Notebook ID
         const notebookId = detail.protyle.notebookId;
         if (!notebookId) {
+            // console.debug("Templater: switch-protyle ignored (missing notebookId)", detail);
             return;
         }
 
@@ -108,31 +110,22 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
 
         // Skip if we've already processed this document
         if (this.processedDocuments.has(docId)) {
+            // console.debug("Templater: switch-protyle ignored (already processed)", docId);
             return;
         }
 
         // Check if it's a new document by examining the action array
-        let isNew = detail.isNew || (
+        const isNew = !!detail.isNew || (
             detail.protyle &&
             detail.protyle.options &&
             detail.protyle.options.action &&
             Array.isArray(detail.protyle.options.action) &&
             detail.protyle.options.action.includes("cb-get-opennew")
         );
-        // Fallback: treat as new if the doc appears empty (single initial block)
-        if (!isNew) {
-            try {
-                const blocks = await getChildBlocks(docId);
-                if (blocks && Array.isArray(blocks.data) && blocks.data.length === 1) {
-                    isNew = true;
-                }
-            } catch (e) {
-                // ignore
-            }
-        }
 
         if (isNew) {
-            const docPath = detail.protyle.path;
+            // console.debug("Templater: switch-protyle applying template", { docId, notebookId });
+            const docPath = detail.protyle.path || "";
             const HdocPath = await getDocumentPathById(docId);
 
             // Get the human-readable name of the notebook to allow notebook-specific rules
@@ -160,7 +153,11 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
                 } else {
                     showMessage(this.i18n.templateAppliedFailed + `${docPath}`, 7000, "error");
                 }
+            } else {
+                // console.debug("Templater: switch-protyle no matching rule", fullPathForMatching);
             }
+        } else {
+            // console.debug("Templater: switch-protyle ignored (not new)", docId);
         }
     }
 
@@ -239,6 +236,7 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
             <th>${this.i18n.destinationPath || "Destination Path"}</th>
             <th>${this.i18n.icon || "Icon"}</th>
             <th>${this.i18n.hotkey || "Hotkey"}</th>
+            <th>${this.i18n.attributes || "Attributes"}</th>
         </tr>
         `;
         // Allow wrapping in headers and align left
@@ -264,6 +262,7 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
             <td>${rule.destinationPath || ""}</td>
             <td>${rule.icon || ""}</td>
             <td>${rule.hotkey || ""}</td>
+            <td>${this.formatAttributesForTable(rule.attributes)}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -404,6 +403,7 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
         rules.forEach((rule, index) => {
             const escapedDestinationPath = (rule.destinationPath || "").replace(/"/g, "&quot;");
             const iconForDataAttribute = this.escapeHtml(this.iconSVG[index]);
+            const attributesText = this.escapeHtml(this.serializeAttributes(rule.attributes));
 
             rulesHTML += `
             <div class="template-rule" data-index="${index}">
@@ -438,6 +438,14 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
                                 {/* Button content will be set by styleIconContainerButton */}
                             </button>
                         </div>
+                    </div>
+                </div>
+                <!-- Attributes -->
+                <div class="fn__flex" style="margin-top: 8px;">
+                    <div class="fn__flex-1">
+                        <div class="b3-label">${this.i18n.attributes || "Attributes"}</div>
+                        <textarea class="b3-text-field fn__block attributes" rows="3" placeholder="${this.i18n.attributesPlaceholder || ""}">${attributesText}</textarea>
+                        <div class="b3-label" style="opacity:0.7;">${this.i18n.attributesHint || ""}</div>
                     </div>
                 </div>
                 <!-- Hotkey -->
@@ -584,6 +592,14 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
                         </div>
                     </div>
                 </div>
+                <!-- Attributes -->
+                <div class="fn__flex" style="margin-top: 8px;">
+                    <div class="fn__flex-1">
+                        <div class="b3-label">${this.i18n.attributes || "Attributes"}</div>
+                        <textarea class="b3-text-field fn__block attributes" rows="3" placeholder="${this.i18n.attributesPlaceholder || ""}"></textarea>
+                        <div class="b3-label" style="opacity:0.7;">${this.i18n.attributesHint || ""}</div>
+                    </div>
+                </div>
                 <!-- Hotkey -->
                 <div class="fn__flex" style="margin-top: 8px;">
                     <div class="fn__flex-1">
@@ -642,6 +658,8 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
                 const description = (ruleElement.querySelector(".description") as HTMLInputElement).value;
                 const destinationPath = (ruleElement.querySelector(".destination-path") as HTMLInputElement).value;
                 const hotkey = (ruleElement.querySelector(".hotkey-input") as HTMLInputElement)?.value || "";
+                const attributesInput = (ruleElement.querySelector(".attributes") as HTMLTextAreaElement)?.value || "";
+                const attributes = this.parseAttributesInput(attributesInput);
                 
                 if (pathPattern && templateId && !isNaN(index) && index < this.iconSVG.length) {
                     newRules.push({
@@ -652,6 +670,7 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
                         icon: this.iconSVG[index],
                         iconUrl: this.iconUrl[index],
                         hotkey: hotkey || undefined,
+                        attributes,
                     });
                 }
             });
@@ -724,6 +743,41 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+    }
+
+    private serializeAttributes(attributes?: Record<string, string>): string {
+        if (!attributes || typeof attributes !== "object") return "";
+        return Object.entries(attributes)
+            .map(([key, value]) => `${key}=${value ?? ""}`)
+            .join("\n");
+    }
+
+    private parseAttributesInput(input: string): Record<string, string> | undefined {
+        if (!input) return undefined;
+        const builtin = new Set(["bookmark", "name", "alias", "memo"]);
+        const attrs: Record<string, string> = {};
+        input.split(/\r?\n/).forEach((line) => {
+            const trimmed = line.trim();
+            if (!trimmed) return;
+            const eqIndex = trimmed.indexOf("=");
+            if (eqIndex === -1) return;
+            const rawKey = trimmed.slice(0, eqIndex).trim();
+            const rawValue = trimmed.slice(eqIndex + 1).trim();
+            if (!rawKey) return;
+            let key = rawKey;
+            if (!builtin.has(key) && !key.startsWith("custom-")) {
+                key = `custom-${key}`;
+            }
+            attrs[key] = rawValue;
+        });
+        return Object.keys(attrs).length > 0 ? attrs : undefined;
+    }
+
+    private formatAttributesForTable(attributes?: Record<string, string>): string {
+        if (!attributes || typeof attributes !== "object") return "";
+        return Object.entries(attributes)
+            .map(([key, value]) => `${this.escapeHtml(String(key))}=${this.escapeHtml(String(value ?? ""))}`)
+            .join("<br>");
     }
 
     private showEmojiPicker(buttonElement: HTMLElement) {
@@ -1197,7 +1251,18 @@ l4 -57 -76 0 -76 0 0 52 c0 39 5 57 22 75 26 28 67 30 98 5z"/>
             if (!rule) return;
             e.preventDefault();
             e.stopPropagation();
-            const notebookId = this.currentNotebookId;
+            let notebookId = this.currentNotebookId;
+            if (!notebookId) {
+                const editors = getAllEditor();
+                const activeEditor = editors.find((editor) => {
+                    const element = editor?.protyle?.element;
+                    return element && element.contains(document.activeElement);
+                }) || editors[0];
+                notebookId = activeEditor?.protyle?.notebookId || null;
+                if (notebookId) {
+                    this.currentNotebookId = notebookId;
+                }
+            }
             if (!notebookId) {
                 showMessage(this.i18n.templateAppliedFailed + ' No active notebook', 4000, 'error');
                 return;

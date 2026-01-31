@@ -3,10 +3,13 @@ import { IWebSocketData, IObject, fetchGet,fetchPost, fetchSyncPost } from "siyu
 export async function getWorkspaceDir(): Promise<any> {
     const data = {};
     const url = "/api/system/getWorkspaces";
+    let workspaceDir = "";
     try {
-        const file = await fetchSyncPost(url, data);
-        const d = file.data[0];
-        return d.path;
+        // const file = await fetchSyncPost(url, data);
+        // const d = file.data[0];
+        // return d.path;
+        workspaceDir = window?.siyuan.config.system.dataDir;
+        return workspaceDir;
     } catch (error_msg) {
         return null;
     }
